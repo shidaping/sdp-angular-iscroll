@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang='en' ng-app="app">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+<link rel="stylesheet" type="text/css" href="../dist/css/sdp_angular_iscroll.min.css"/>
+<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+<script src="./bower_components/iscroll/src/iscroll.js"></script>
+<script src="./bower_components/angular/angular.min.js"></script>
+
+<!-- <script src="../dist/js/sdp_angular_iscroll.min.js"></script> -->
+<script src="../src/js/sdp_angular_iscroll.js"></script>
+<style>
+	body,div,ul,li,span{
+		box-sizing:border-box;
+		padding:0;
+		margin:0;
+	}
+	body{
+		height:100%;
+		width:100%;
+	}
+
+	.example_app_head{
+		position:absolute;
+		text-align: center;
+		width:100%;
+		height:10%;
+		border-bottom:1px solid #dddddd;
+		top:0;
+		background:#00cc00;
+		display:table;
+		font-family: bold;
+	}
+	.example_app_head>div{
+		vertical-align: middle;
+		display: table-cell;
+	}
+	.example_app_content{
+		position:absolute;
+		vertical-align: middle;
+		width:100%;
+		height:80%;
+		top:10%;
+	}
+	.example_app_foot{
+		position:absolute;
+		vertical-align: middle;
+		text-align: center;
+		width:100%;
+		height:10%;
+		border-top:1px solid #dddddd;
+		bottom:0;
+		display: table;
+		font-family: bold;
+		background:#00cc00;
+	}
+	.example_app_foot>div{
+		vertical-align: middle;
+		display: table-cell;
+	}
+	.example_ul{
+
+	}
+	.example_ul>li{
+		list-style: none;
+		height:40px;
+		line-height:40px;
+		border-bottom:1px solid #dddddd;
+
+	}
+	.example_ul>li:last-child{
+		border-bottom:none;
+	}
+	.sdp_directive_iscroll_wrapper{
+		background: #cccccc;
+	}
+	.sdp_directive_iscroll_scroller{
+		background:white;
+	}
+	.example_scroll_top{
+		height:39px;
+		text-align:center;
+		background:#eeeeee;
+		display:table;
+		border-bottom:1px solid #dddddd;
+		width:100%;
+	}
+	.example_scroll_top>div {
+		display: table-cell;
+		width:100%;
+		vertical-align: middle;
+	}
+	.example_scroll_top>div>img{
+		width:15px;
+		height:15px;
+		vertical-align: middle;
+		margin-right:5px;
+	}
+	.example_scroll_top>div>span{
+		vertical-align: middle;
+	}
+	.example_scroll_bottom{
+		height:40px;
+		text-align:center;
+		background:#eeeeee;
+		display:table;
+		text-align:center;
+		width:100%;
+		border-top:1px solid #dddddd;
+	}
+	.example_scroll_bottom>div{
+		display: table-cell;
+		width:100%;
+		vertical-align: middle;
+	}
+	.example_scroll_bottom>div>img{
+		width:15px;
+		height:15px;
+		vertical-align: middle;
+		margin-right:5px;
+	}
+	.example_scroll_bottom>div>span{
+		vertical-align: middle;
+	}
+
+
+</style>
+
+<script>
+(function(){
+	'use strict';
+	var app=angular.module("app",['sdp-angular-iscroll'])
+		.controller("mainCtrl",["$scope","$timeout",function($scope,$timeout){
+			$scope.topTextOptions={
+				load:'is refreshing',
+				pull:'pull down to refresh',
+				release:'release to refresh'
+			}
+
+			//when data is changed, the icroll must be refreshed 
+			$scope.$watch("data",function(newValue,oldValue){
+				if((!!newValue)&&(newValue.length%30==0)&&(newValue.length!=0)){
+		            $scope.hasMore=true;
+		  
+		        }else{
+		            $scope.hasMore=false;
+		        }
+				$timeout(function(){
+					$scope.iscrollInstance.refresh();
+				},100)
+
+			})
+			$scope.config={}
+			$scope.config.page=1;
+			$scope.hasMore=false;
+
+
+			$scope.getFatalData=function(){
+				$scope.fatalData=[]
+				for(var i=($scope.config.page-1)*30;i<30*$scope.config.page;i++){
+					$scope.fatalData.push("text"+i);
+				}
+				return angular.copy($scope.fatalData);
+
+			}
+
+
+
+			$scope.refresh=function(){
+				$scope.config.page=1;
+				//emulate ajax request
+
+				if(!!$scope.iscrollInstance){
+	                $scope.iscrollInstance.minScrollY=0;
+	                $scope.iscrollInstance.scrollTo(0,0);
+	            }
+				$timeout(function(){
+					$scope.data=$scope.getFatalData();
+				},3000)
+
+			}
+			$scope.loadMore=function(){
+				$scope.config.page+=1;
+				//emulate ajax request
+				$timeout(function(){
+					$scope.data=$scope.data.concat($scope.getFatalData());
+				},3000)
+			}
+			$timeout(function(){
+				$scope.isRefreshing=true;
+				$scope.topText=$scope.topTextOptions.load;
+				$scope.refresh();
+			},200)
+
+
+		}])
+})();
+</script>
+</head>
+
+
+<body ng-controller="mainCtrl">
+<div class="example_app_head">
+	<div>app title</div>
+</div>
+<div class="example_app_content">
+	<div class="sdp_directive_iscroll_wrapper" sdp-angular-iscroll iscroll-instance="iscrollInstance" pull-down-offset=40 pull-up-offset=40 is-refreshing="isRefreshing" is-loading-more="isLoadingMore" top-text="topText" top-text-options="topTextOptions" bottom-text-options="{load:'is loading more'}"  has-more="hasMore" refresh="refresh" load-more="loadMore">
+		<div class="sdp_directive_iscroll_scroller">
+			<div class="example_scroll_top">
+				<div>
+					<img src="./img/loading.gif" ng-show="!!isRefreshing" /><span>{{topText}}</span>
+				</div>
+			</div>
+			<ul class="example_ul">
+				<li ng-repeat="item in data">{{item}}</li>
+
+			</ul>
+			<div class="example_scroll_bottom" ng-show="!!hasMore">
+				<div>
+					<img src="./img/loading.gif"/><span>is loading more</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="example_app_foot">
+	<div>app foot</div>
+</div>
+</body>

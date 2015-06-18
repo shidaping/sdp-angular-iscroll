@@ -1,0 +1,15 @@
+{
+    "name": "sdp-angular_iscroll",
+    "version": "0.0.1",
+    "description": "angular iscroll directive for iscroll",
+    "author": "shidaping <starlight_shi@163.com>",
+    "dependencies": {
+        "gulp":"latest",
+        "gulp-sass":"latest",
+        "gulp-uglify":"latest",
+        "gulp-jshint":"latest",
+        "gulp-concat":"latest",
+        "gulp-rename":"latest",
+        "gulp-minify-css":"latest"
+    }
+}

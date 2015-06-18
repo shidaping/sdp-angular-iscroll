@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang='en' ng-app="app">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+<link rel="stylesheet" type="text/css" href="../dist/css/sdp_angular_iscroll.min.css"/>
+<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+<script src="./bower_components/iscroll/src/iscroll.js"></script>
+<script src="./bower_components/angular/angular.min.js"></script>
+
+<script src="../src/js/sdp_angular_iscroll.js"></script>
+
+<style>
+	body,div,ul,li,span{
+		box-sizing:border-box;
+		padding:0;
+		margin:0;
+	}
+	.example_ul{
+
+	}
+	.example_ul>li{
+		list-style: none;
+		height:40px;
+		border-bottom:1px solid #eeeeee;
+		line-height:40px;
+	}
+	.sdp_directive_iscroll_wrapper{
+		background: #cccccc;
+	}
+	.sdp_directive_iscroll_scroller{
+		background:white;
+	}
+</style>
+
+<script>
+(function(){
+	'use strict';
+	var app=angular.module("app",['sdp-angular-iscroll'])
+		.controller("mainCtrl",["$scope","$timeout",function($scope,$timeout){
+			$scope.$watch(function(){
+				return $scope.data;
+			},function(newValue,oldValue){
+				$timeout(
+					function(){
+						$scope.iscrollInstance.refresh();
+					},200
+				)
+
+			})
+			$scope.fatalData=[]
+			for(var i=0;i<30;i++){
+				$scope.fatalData.push("text"+i);
+			}
+			$scope.data=angular.copy($scope.fatalData);
+			
+
+		}])
+})();
+</script>
+</head>
+
+
+<body ng-controller="mainCtrl">
+<div class="example_app_head"></div>
+<div class="example_app_content"> 
+	<div class="sdp_directive_iscroll_wrapper" sdp-angular-iscroll iscroll-Instance="iscrollInstance">
+		<div class="sdp_directive_iscroll_scroller">
+			<ul class="example_ul">
+				<li ng-repeat="item in data">{{item}}</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="example_app_foot">
+</div>
+</body>
